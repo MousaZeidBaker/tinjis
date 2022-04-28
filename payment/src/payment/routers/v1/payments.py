@@ -1,6 +1,6 @@
 import logging
 import random
-from enum import Enum
+from typing import Any
 
 from fastapi import APIRouter
 from pydantic import BaseModel
@@ -8,20 +8,12 @@ from pydantic import BaseModel
 router = APIRouter(prefix="/v1")
 
 
-class Currency(str, Enum):
-    EUR = "EUR"
-    USD = "USD"
-    DKK = "DKK"
-    SEK = "SEK"
-    GBP = "GBP"
-
-
 class Payment(BaseModel):
     """
     Payment model
     """
 
-    currency: Currency
+    currency: Any
     value: float
     customer_id: str
 
