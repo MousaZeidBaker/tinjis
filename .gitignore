@@ -6,3 +6,8 @@ build/
 *.iml
 .DS_Store
 .envrc
+*.swp
+__pycache__
+.pytest_cache
+*.egg-info
+source.bat
