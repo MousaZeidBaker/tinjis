@@ -1,6 +1,17 @@
 version: '3'
 services:
+  payment:
+    container_name: payment
+    build: ./payment
+    ports:
+      - 8080:8080
+    environment:
+      - LOGLEVEL=INFO
   pleo-antaeus:
+    depends_on:
+      - payment
     build: .
     ports:
      - "8000:8000"
+    environment:
+      - PAYMENT_PROVIDER_ENDPOINT=http://payment:8080/v1/payments
