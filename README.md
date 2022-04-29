@@ -47,3 +47,46 @@ and the app should build and start running (after a few minutes when gradle does
 1. We will use your scripts to deploy both services to our Kubernetes cluster.
 2. Run the pay endpoint on Antaeus to try and pay the invoices using your service.
 3. Fetch all the invoices from Antaeus and confirm that roughly 50% (remember, your app should randomly fail on some of the invoices) of them will have status "PAID".
+
+## Solution
+
+Deploy services
+```shell
+kubectl apply -k kubernetes
+```
+
+To hit the Antaeus endpoint you need the cluster's node ip & node port
+```shell
+curl <NodeIP>:<NodePort>/rest/health
+```
+
+### Discussion
+* How would a new deployment look like for these services? What kind of tools
+  would you use?
+    * Separate services into their own repositories
+    * Use
+      [ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/)
+      to route traffic into the cluster instead of NodePort
+    * Use
+      [volumes](https://kubernetes.io/docs/concepts/storage/persistent-volumes/)
+      to persist data in a pod, otherwise data will be lost on a pod restart
+    * Configure [Horizontal Pod Autoscaling](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/)
+    * Consider using a GitOps tool, such as [Flux](https://fluxcd.io/), to
+      automate infrastructure provisioning & application deployment
+* If a developers needs to push updates to just one of the services, how can we
+  grant that permission without allowing the same developer to deploy any other
+  services running in K8s?
+    * [RBAC](https://kubernetes.io/docs/reference/access-authn-authz/rbac/) can
+      be used to regulate access, however developers SHOULD NOT deploy manually
+      instead deployments should be carried out by CI/CD pipelines
+* How do we prevent other services running in the cluster to talk to your
+  service. Only Antaeus should be able to do it.
+    * [Network
+      Policies](https://kubernetes.io/docs/concepts/services-networking/network-policies/)
+      can be used to control traffic flow
+
+## Other comments
+- The `payInvoices` method in `AntaeusRest.kt` makes an early exist whenever a
+  payment fails resulting in unhandled payments, is that intended?
+- The `Currency` enum class in `Currency.kt` does not properly serialize the
+  values
