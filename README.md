@@ -64,6 +64,8 @@ curl <NodeIP>:<NodePort>/rest/health
 * How would a new deployment look like for these services? What kind of tools
   would you use?
     * Separate services into their own repositories
+    * Use [Semantic Versioning](https://semver.org/) to tag images, it's easier
+      to rollback if you know which version is running
     * Use
       [ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/)
       to route traffic into the cluster instead of NodePort
@@ -85,7 +87,7 @@ curl <NodeIP>:<NodePort>/rest/health
       Policies](https://kubernetes.io/docs/concepts/services-networking/network-policies/)
       can be used to control traffic flow
 
-## Other comments
+### Other comments
 - The `payInvoices` method in `AntaeusRest.kt` makes an early exist whenever a
   payment fails resulting in unhandled payments, is that intended?
 - The `Currency` enum class in `Currency.kt` does not properly serialize the
